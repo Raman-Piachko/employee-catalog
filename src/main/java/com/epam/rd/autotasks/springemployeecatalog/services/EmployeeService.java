@@ -3,20 +3,16 @@ package com.epam.rd.autotasks.springemployeecatalog.services;
 import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
 import com.epam.rd.autotasks.springemployeecatalog.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class EmployeeService {
-    private final EmployeeRepository employeeRepository;
-
     @Autowired
-    public EmployeeService(EmployeeRepository employeeDaoImpl) {
-        this.employeeRepository = employeeDaoImpl;
-    }
+    private EmployeeRepository employeeRepository;
 
-    public Page<Employee> getEmployees(Pageable pageable) {
-        return employeeRepository.findAll(pageable);
+    public List<Employee> getAll() {
+        return employeeRepository.findAll();
     }
 }

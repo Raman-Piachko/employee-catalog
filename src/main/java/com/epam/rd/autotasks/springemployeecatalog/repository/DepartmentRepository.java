@@ -1,19 +1,19 @@
 package com.epam.rd.autotasks.springemployeecatalog.repository;
 
+import com.epam.rd.autotasks.springemployeecatalog.domain.Department;
 import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
 import com.epam.rd.autotasks.springemployeecatalog.extractors.Extractor;
+import com.epam.rd.autotasks.springemployeecatalog.rowpappers.DepartmentRowMapper;
 import com.epam.rd.autotasks.springemployeecatalog.rowpappers.EmployeeRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.ALL_FROM_EMPLOYEE;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.ALL_FROM_DEPARTMENT;
 import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.EMPLOYEE_BY_ID;
 
-@Repository
-public class EmployeeRepository {
+public class DepartmentRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
@@ -22,12 +22,12 @@ public class EmployeeRepository {
     private Extractor fullNameExtractor;
 
 
-    public List<Employee> findAll() {
-        List<Employee> employees = jdbcTemplate.query(
-                ALL_FROM_EMPLOYEE,
-                new EmployeeRowMapper(departmentExtractor, fullNameExtractor));
+    public List<Department> findAll() {
+        List<Department> departments = jdbcTemplate.query(
+                ALL_FROM_DEPARTMENT,
+                new DepartmentRowMapper());
 
-        return employees;
+        return departments;
     }
 
     public Employee findByEmployeeId(Long id) {
