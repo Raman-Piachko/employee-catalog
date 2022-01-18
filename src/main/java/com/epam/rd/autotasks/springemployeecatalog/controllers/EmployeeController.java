@@ -34,4 +34,9 @@ public class EmployeeController {
     public Employee getEmployee(@PathVariable String ID, @RequestParam(required = false) boolean full_chain) throws SQLException {
         return employeeService.getEmployeeById(ID, full_chain);
     }
+
+    @GetMapping(value = "/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Employee getEmployee(@PathVariable String ID, @RequestParam(required = false) boolean full_chain) {
+        return employeeService.getEmployeeById(ID, full_chain);
+    }
 }
