@@ -2,7 +2,8 @@ package com.epam.rd.autotasks.springemployeecatalog;
 
 public class AppConstants {
     public static final String ALL_FROM_EMPLOYEE = "SELECT * FROM employee";
-    public static final String EMPLOYEE_BY_ID = "SELECT * FROM employee WHERE id = ?";
+    public static final String EMPLOYEE_BY_ID = "SELECT id, firstName, lastName, middleName, position, manager, hireDate AS hired, salary, department \" +\n" +
+            "                    \"FROM employee WHERE ID = %d";
     public static final String EMPLOYEE_BY_DEP = "SELECT * FROM employee WHERE department = ?";
     public static final String EMPLOYEE_BY_MANAGER = "SELECT * FROM employee WHERE manager = ?";
     public static final String PAGEABLE_FORMAT_QUERY =

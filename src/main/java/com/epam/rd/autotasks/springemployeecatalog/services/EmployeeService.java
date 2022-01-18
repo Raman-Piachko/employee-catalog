@@ -12,7 +12,15 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
     public List<Employee> getAll() {
         return employeeRepository.findAll();
+    }
+
+    public Employee getEmployeeById(String id, boolean full_chain) {
+        return employeeRepository.findById(Long.parseLong(id), full_chain);
     }
 }
