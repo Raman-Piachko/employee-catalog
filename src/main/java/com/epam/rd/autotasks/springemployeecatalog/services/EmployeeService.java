@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.DEFAULT_SELECT;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.ORDER_BY_LASTNAME;
+
 @Service
 public class EmployeeService {
     @Autowired
@@ -17,6 +20,6 @@ public class EmployeeService {
     }
 
     public List<Employee> getAll() {
-        return employeeRepository.getAllEmployees("SELECT * FROM EMPLOYEE E LEFT JOIN DEPARTMENT D ON E.DEPARTMENT = D.ID ORDER BY E.LASTNAME");
+        return employeeRepository.getAllEmployees(DEFAULT_SELECT + ORDER_BY_LASTNAME);
     }
 }

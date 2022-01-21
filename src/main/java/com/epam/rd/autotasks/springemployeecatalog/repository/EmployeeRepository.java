@@ -1,8 +1,7 @@
 package com.epam.rd.autotasks.springemployeecatalog.repository;
 
 import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
-import com.epam.rd.autotasks.springemployeecatalog.extractors.EmployeeWithChainExtractor;
-import com.epam.rd.autotasks.springemployeecatalog.extractors.SimpleEmployeeExtractor;
+import com.epam.rd.autotasks.springemployeecatalog.extractors.ExtractorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,17 +12,15 @@ import java.util.List;
 public class EmployeeRepository {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleEmployeeExtractor extractor;
-    private EmployeeWithChainExtractor withChainExtractor;
+    private ExtractorFactory factory;
 
     @Autowired
-    public EmployeeRepository(JdbcTemplate jdbcTemplate, SimpleEmployeeExtractor extractor, EmployeeWithChainExtractor withChainExtractor) {
+    public EmployeeRepository(JdbcTemplate jdbcTemplate, ExtractorFactory factory) {
         this.jdbcTemplate = jdbcTemplate;
-        this.extractor = extractor;
-        this.withChainExtractor = withChainExtractor;
+        this.factory = factory;
     }
 
     public List<Employee> getAllEmployees(String query) {
-        return jdbcTemplate.query(query, extractor);
+        return jdbcTemplate.query(query, factory.getExtractor(false));
     }
 }

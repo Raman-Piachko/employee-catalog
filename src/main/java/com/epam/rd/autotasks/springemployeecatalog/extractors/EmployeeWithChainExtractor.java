@@ -16,10 +16,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.DEPARTMENT_ID;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.EMPLOYEE_ID;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.FIRSTNAME;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.HIREDATE;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.LASTNAME;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.LOCATION;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.MANAGER;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.MIDDLENAME;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.NAME;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.POSITION;
+import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.SALARY;
 import static com.epam.rd.autotasks.springemployeecatalog.utils.ExtractorUtils.createEmployeeWithManager;
 
 @Component
-public class EmployeeWithChainExtractor implements ResultSetExtractor<List> {
+public class EmployeeWithChainExtractor implements ResultSetExtractor<List<Employee>> {
 
     @Override
     public List<Employee> extractData(ResultSet resultSet) throws SQLException {
@@ -41,18 +52,17 @@ public class EmployeeWithChainExtractor implements ResultSetExtractor<List> {
 
     private void initEmployeeListWithManagerMap(ResultSet resultSet, List<Employee> intermediateEmployeeList, Map<Long, Long> managerMap) throws SQLException {
         while (resultSet.next()) {
-            Long id = resultSet.getLong("EMPLOYEE.ID");
-            String firstName = resultSet.getString("FIRSTNAME");
-            String lastName = resultSet.getString("LASTNAME");
-            String middleName = resultSet.getString("MIDDLENAME");
-            Position position = Position.valueOf(resultSet.getString("POSITION"));
-            LocalDate hired = resultSet.getDate("HIREDATE").toLocalDate();
-            BigDecimal salary = resultSet.getBigDecimal("SALARY");
-            long departmentId = resultSet.getLong("DEPARTMENT.ID");
-            String name = resultSet.getString("NAME");
-            String location = resultSet.getString("LOCATION");
-
-            Long managerId = resultSet.getLong("MANAGER");
+            Long id = resultSet.getLong(EMPLOYEE_ID);
+            String firstName = resultSet.getString(FIRSTNAME);
+            String lastName = resultSet.getString(LASTNAME);
+            String middleName = resultSet.getString(MIDDLENAME);
+            Position position = Position.valueOf(resultSet.getString(POSITION));
+            LocalDate hired = resultSet.getDate(HIREDATE).toLocalDate();
+            BigDecimal salary = resultSet.getBigDecimal(SALARY);
+            Long departmentId = resultSet.getLong(DEPARTMENT_ID);
+            String name = resultSet.getString(NAME);
+            String location = resultSet.getString(LOCATION);
+            Long managerId = resultSet.getLong(MANAGER);
             managerMap.put(id, managerId);
 
             intermediateEmployeeList.add(new Employee(
