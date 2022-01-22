@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog;
+package com.epam.rd.autotasks.springemployeecatalog.constants;
 
 public final class AppConstants {
     private AppConstants() {
@@ -16,5 +16,6 @@ public final class AppConstants {
     public static final String LOCATION = "LOCATION";
     public static final String MANAGER = "MANAGER";
     public static final String DEFAULT_SELECT = "SELECT * FROM EMPLOYEE E LEFT JOIN DEPARTMENT D ON E.DEPARTMENT = D.ID";
-    public static final String ORDER_BY_LASTNAME = "ORDER BY E.LASTNAME";
+    public static final String ORDER_BY_LASTNAME = " ORDER BY E.LASTNAME";
+    public static final String DIGIT_REGEX= "\\d+";
 }

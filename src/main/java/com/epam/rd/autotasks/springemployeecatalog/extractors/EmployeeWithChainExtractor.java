@@ -16,17 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.DEPARTMENT_ID;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.EMPLOYEE_ID;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.FIRSTNAME;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.HIREDATE;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.LASTNAME;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.LOCATION;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.MANAGER;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.MIDDLENAME;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.NAME;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.POSITION;
-import static com.epam.rd.autotasks.springemployeecatalog.AppConstants.SALARY;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.DEPARTMENT_ID;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.EMPLOYEE_ID;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.FIRSTNAME;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.HIREDATE;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.LASTNAME;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.LOCATION;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MANAGER;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MIDDLENAME;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.NAME;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.POSITION;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.SALARY;
 import static com.epam.rd.autotasks.springemployeecatalog.utils.ExtractorUtils.createEmployeeWithManager;
 
 @Component
@@ -59,7 +59,7 @@ public class EmployeeWithChainExtractor implements ResultSetExtractor<List<Emplo
             Position position = Position.valueOf(resultSet.getString(POSITION));
             LocalDate hired = resultSet.getDate(HIREDATE).toLocalDate();
             BigDecimal salary = resultSet.getBigDecimal(SALARY);
-            Long departmentId = resultSet.getLong(DEPARTMENT_ID);
+            long departmentId = resultSet.getLong(DEPARTMENT_ID);
             String name = resultSet.getString(NAME);
             String location = resultSet.getString(LOCATION);
             Long managerId = resultSet.getLong(MANAGER);
@@ -72,7 +72,7 @@ public class EmployeeWithChainExtractor implements ResultSetExtractor<List<Emplo
                     hired,
                     salary,
                     null,
-                    departmentId != 0 ? new Department(departmentId, name, location) : null
+                    departmentId != 0L ? new Department(departmentId, name, location) : null
             ));
         }
     }
