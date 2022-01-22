@@ -27,7 +27,6 @@ public class EmployeeRepository {
         return jdbcTemplate.query(query, factory.getExtractor(withChain));
     }
 
-
     public Employee getEmployeeById(String query, Long employeeId, boolean withChain) {
         return getAllEmployees(query, withChain).stream()
                 .filter(employee -> employee.getId().equals(employeeId))
@@ -57,5 +56,4 @@ public class EmployeeRepository {
                     .collect(Collectors.toList());
         }
     }
-
 }

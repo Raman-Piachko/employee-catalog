@@ -43,7 +43,7 @@ public class SimpleEmployeeExtractor implements ResultSetExtractor<List<Employee
         return employees;
     }
 
-    public static void initEmployeeListWithManagerMap(ResultSet resultSet, List<Employee> intermediateEmployeeList, Map<Long, Long> managerMap) throws SQLException {
+    private void initEmployeeListWithManagerMap(ResultSet resultSet, List<Employee> intermediateEmployeeList, Map<Long, Long> managerMap) throws SQLException {
 
         while (resultSet.next()) {
             Long id = resultSet.getLong(EMPLOYEE_ID);
