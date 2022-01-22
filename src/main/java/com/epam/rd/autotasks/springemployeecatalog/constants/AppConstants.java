@@ -17,5 +17,11 @@ public final class AppConstants {
     public static final String MANAGER = "MANAGER";
     public static final String DEFAULT_SELECT = "SELECT * FROM EMPLOYEE E LEFT JOIN DEPARTMENT D ON E.DEPARTMENT = D.ID";
     public static final String ORDER_BY_LASTNAME = " ORDER BY E.LASTNAME";
-    public static final String DIGIT_REGEX= "\\d+";
+    public static final String ORDER_BY_HIREDATE = " ORDER BY E.HIREDATE";
+    public static final String ORDER_BY_POSITION = " ORDER BY E.POSITION";
+    public static final String ORDER_BY_SALARY = " ORDER BY E.SALARY";
+    public static final String LASTNAME_CASE = "lastName";
+    public static final String HIREDATE_CASE = "hired";
+    public static final String POSITION_CASE = "position";
+    public static final String DIGIT_REGEX = "\\d+";
 }
