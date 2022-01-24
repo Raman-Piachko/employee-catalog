@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.DIGIT_REGEX;
@@ -27,11 +28,10 @@ public class EmployeeRepository {
         return jdbcTemplate.query(query, factory.getExtractor(withChain));
     }
 
-    public Employee getEmployeeById(String query, Long employeeId, boolean withChain) {
-        return getAllEmployees(query, withChain).stream()
-                .filter(employee -> employee.getId().equals(employeeId))
-                .findAny()
-                .orElse(null);
+    public Employee getEmployeeById(String query, Long id, boolean withChain) {
+        Employee employee = Objects.requireNonNull(jdbcTemplate.query(query, new Object[]{id}, factory.getExtractor(withChain))).get(0);
+        System.out.println(employee.getManager().getId()+" managerID");
+        return employee;
     }
 
     public List<Employee> getByManagerId(String query, Long manager_id) {

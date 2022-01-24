@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.DEFAULT_SELECT;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.EMPLOYEE_BY_ID_SELECT;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.HIREDATE_CASE;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.LASTNAME_CASE;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.ORDER_BY_HIREDATE;
@@ -52,7 +53,7 @@ public class EmployeeService {
     }
 
     public Employee getById(Long id, boolean withChain) {
-        return employeeRepository.getEmployeeById(DEFAULT_SELECT, id, withChain);
+        return employeeRepository.getEmployeeById(DEFAULT_SELECT+"WHERE e.ID = ?", id, withChain);
     }
 
     public List<Employee> getByManagerId(Long manager_id, String page, String size, String sort) {
