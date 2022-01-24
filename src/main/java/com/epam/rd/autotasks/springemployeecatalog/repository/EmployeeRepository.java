@@ -4,8 +4,10 @@ import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
 import com.epam.rd.autotasks.springemployeecatalog.extractors.ExtractorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,9 +31,12 @@ public class EmployeeRepository {
     }
 
     public Employee getEmployeeById(String query, Long id, boolean withChain) {
-        Employee employee = Objects.requireNonNull(jdbcTemplate.query(query, new Object[]{id}, factory.getExtractor(withChain))).get(0);
-        System.out.println(employee.getManager().getId()+" managerID");
-        return employee;
+        return Objects.requireNonNull(jdbcTemplate.query(getPreparedStatementCreator(query, id), factory.getExtractor(withChain))).get(0);
+    }
+
+    private PreparedStatementCreator getPreparedStatementCreator(String query, Long id) {
+        String finalQuery = String.format(query, id);
+        return connection -> connection.prepareStatement(finalQuery, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
     }
 
     public List<Employee> getByManagerId(String query, Long manager_id) {

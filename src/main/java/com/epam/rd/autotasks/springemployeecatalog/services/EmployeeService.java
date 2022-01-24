@@ -53,7 +53,7 @@ public class EmployeeService {
     }
 
     public Employee getById(Long id, boolean withChain) {
-        return employeeRepository.getEmployeeById(DEFAULT_SELECT+"WHERE e.ID = ?", id, withChain);
+        return employeeRepository.getEmployeeById(DEFAULT_SELECT+"WHERE e.ID = %d", id, withChain);
     }
 
     public List<Employee> getByManagerId(Long manager_id, String page, String size, String sort) {

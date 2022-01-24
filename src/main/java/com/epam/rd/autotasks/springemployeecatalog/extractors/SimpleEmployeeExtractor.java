@@ -30,7 +30,6 @@ import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MANAGER_HIREDATE;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MANAGER_ID;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MANAGER_LASTNAME;
-import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MANAGER_MANAGER;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MANAGER_MIDDLENAME;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MANAGER_POSITION;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.MANAGER_SALARY;
@@ -45,12 +44,12 @@ public class SimpleEmployeeExtractor implements ResultSetExtractor<List<Employee
 
     @Override
     public List<Employee> extractData(ResultSet resultSet) throws SQLException {
-        List<Pair<Long, Employee>> pairList = initEmployeeListWithManagerMap(resultSet);
-        return addMangerToEmployee(pairList);
+        List<Employee> pairList = initEmployeeListWithManagerMap(resultSet);
+        return pairList;
     }
 
-    private List<Pair<Long, Employee>> initEmployeeListWithManagerMap(ResultSet resultSet) throws SQLException {
-        List<Pair<Long, Employee>> pairList = new ArrayList<>();
+    private List<Employee> initEmployeeListWithManagerMap(ResultSet resultSet) throws SQLException {
+        List<Employee> employees = new ArrayList<>();
         while (resultSet.next()) {
             Long id = resultSet.getLong(EMPLOYEE_ID);
             String firstName = resultSet.getString(FIRSTNAME);
@@ -63,43 +62,33 @@ public class SimpleEmployeeExtractor implements ResultSetExtractor<List<Employee
             String name = resultSet.getString(NAME);
             String location = resultSet.getString(LOCATION);
             long managerId = resultSet.getLong(MANAGER);
-
+            Employee manager = getManger(resultSet, managerId);
             Employee employee = new Employee(
                     id,
                     createFullName(firstName, lastName, middleName),
                     position,
                     hired,
                     salary,
-                    null,
+                    manager,
                     departmentId != 0L ? new Department(departmentId, name, location) : null);
-            pairList.add(Pair.of(managerId, employee));
+            ;
+            employees.add(employee);
         }
-        return pairList;
+        return employees;
     }
 
-    private List<Employee> addMangerToEmployee(List<Pair<Long, Employee>> pairList) {
-        List<Employee> resultEmployees = new ArrayList<>();
-        List<Employee> employees = pairList.stream().map(Pair::getSecond).collect(Collectors.toList());
-        for (Pair<Long, Employee> pair : pairList) {
-            Long managerId = pair.getFirst();
-            Employee manager = getManager(managerId, employees);
-            Long id = pair.getSecond().getId();
-            FullName fullName = pair.getSecond().getFullName();
-            Position position = pair.getSecond().getPosition();
-            LocalDate hired = pair.getSecond().getHired();
-            BigDecimal salary = pair.getSecond().getSalary();
-            Department department = pair.getSecond().getDepartment();
-            Employee employee = new Employee(id, fullName, position, hired, salary, manager, department);
-            resultEmployees.add(employee);
+    private Employee getManger(ResultSet resultSet, long managerId) throws SQLException {
+        Employee manager = null;
+        if (managerId != 0L) {
+            manager = new Employee(resultSet.getLong(MANAGER_ID),
+                    createFullName(resultSet.getString(MANAGER_FIRSTNAME), resultSet.getString(MANAGER_LASTNAME), resultSet.getString(MANAGER_MIDDLENAME)),
+                    Position.valueOf(resultSet.getString(MANAGER_POSITION)),
+                    resultSet.getDate(MANAGER_HIREDATE).toLocalDate(),
+                    resultSet.getBigDecimal(MANAGER_SALARY),
+                    null,
+                    resultSet.getLong(MANAGER_DEPARTMENT_ID) != 0L ? new Department(resultSet.getLong(MANAGER_DEPARTMENT_ID), resultSet.getString(MANAGER_DEPARTMENT_NAME), resultSet.getString(MANAGER_DEPARTMENT_LOCATION)) : null
+            );
         }
-        return resultEmployees;
+        return manager;
     }
-
-    private Employee getManager(Long managerId, List<Employee> employees) {
-        return employees.stream()
-                .filter(employee -> employee.getId().equals(managerId))
-                .findFirst()
-                .orElse(null);
-    }
-
 }
