@@ -63,22 +63,34 @@ public class AppConstants {
             " ";
 
 
-    public static final String EMPLOYEE_BY_ID_SELECT = "WITH RECURSIVE T(ID,LASTNAME,MANAGER ) AS (\n" +
-            "\tSELECT\n" +
-            "\t\tid,\n" +
-            "\t\tlastname,\n" +
-            "\t\tmanager\n" +
-            "\tFROM\n" +
-            "\t\tEMPLOYEE  where id= 7654\n" +
-            "\t\tUNION all\n" +
-            "\t\tSELECT\n" +
-            "\t\t\tm.id,\n" +
-            "\t\t\tm.lastname,\n" +
-            "\t\t\tm.manager\n" +
-            "\t\tFROM\n" +
-            "\t\t\tT \n" +
-            "\t\tINNER JOIN employee AS m ON T.manager= m.id \n" +
-            ") SELECT * FROM T ;\n";
+    public static final String EMPLOYEE_BY_ID_SELECT = "WITH RECURSIVE T(ID,FIRSTNAME,LASTNAME, MIDDLENAME, POSITION, HIREDATE, SALARY, MANAGER, DEPARTMENT ) AS (\n" +
+            "  SELECT\n" +
+            "    id,\n" +
+            "    firstname,\n" +
+            "    lastname,\n" +
+            "    middlename,\n" +
+            "    position,\n" +
+            "    hiredate,\n" +
+            "    salary,\n" +
+            "    manager,\n" +
+            "    department\n" +
+            "  FROM\n" +
+            "    EMPLOYEE  where id= 7654\n" +
+            "    UNION all\n" +
+            "    SELECT\n" +
+            "      m.id,\n" +
+            "      m.firstname,\n" +
+            "      m.lastname,\n" +
+            "      m.middlename,\n" +
+            "      m.position,\n" +
+            "      m.hiredate,\n" +
+            "      m.salary,\n" +
+            "      m.manager,\n" +
+            "      m.department\n" +
+            "    FROM\n" +
+            "      T \n" +
+            "    INNER JOIN employee AS m ON T.manager= m.id \n" +
+            ") SELECT T.ID, T.FIRSTNAME, T.LASTNAME,T.MIDDLENAME,T.POSITION, T.HIREDATE, T.SALARY,T.MANAGER,T.DEPARTMENT, D.NAME, D.LOCATION FROM T LEFT JOIN DEPARTMENT D ON T.DEPARTMENT = D.ID ;";
     public static final String ORDER_BY_LASTNAME = " ORDER BY E.LASTNAME";
     public static final String ORDER_BY_HIREDATE = " ORDER BY E.HIREDATE";
     public static final String ORDER_BY_POSITION = " ORDER BY E.POSITION";
