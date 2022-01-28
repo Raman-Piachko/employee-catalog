@@ -63,7 +63,22 @@ public class AppConstants {
             " ";
 
 
-    public static final String EMPLOYEE_BY_ID_SELECT = "SELECT * FROM EMPLOYEE E LEFT JOIN DEPARTMENT D ON E.DEPARTMENT = D.ID";
+    public static final String EMPLOYEE_BY_ID_SELECT = "WITH RECURSIVE T(ID,LASTNAME,MANAGER ) AS (\n" +
+            "\tSELECT\n" +
+            "\t\tid,\n" +
+            "\t\tlastname,\n" +
+            "\t\tmanager\n" +
+            "\tFROM\n" +
+            "\t\tEMPLOYEE  where id= 7654\n" +
+            "\t\tUNION all\n" +
+            "\t\tSELECT\n" +
+            "\t\t\tm.id,\n" +
+            "\t\t\tm.lastname,\n" +
+            "\t\t\tm.manager\n" +
+            "\t\tFROM\n" +
+            "\t\t\tT \n" +
+            "\t\tINNER JOIN employee AS m ON T.manager= m.id \n" +
+            ") SELECT * FROM T ;\n";
     public static final String ORDER_BY_LASTNAME = " ORDER BY E.LASTNAME";
     public static final String ORDER_BY_HIREDATE = " ORDER BY E.HIREDATE";
     public static final String ORDER_BY_POSITION = " ORDER BY E.POSITION";
