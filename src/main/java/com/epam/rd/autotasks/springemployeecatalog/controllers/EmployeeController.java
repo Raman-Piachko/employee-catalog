@@ -2,6 +2,7 @@ package com.epam.rd.autotasks.springemployeecatalog.controllers;
 
 import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
 import com.epam.rd.autotasks.springemployeecatalog.services.EmployeeService;
+import com.epam.rd.autotasks.springemployeecatalog.services.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +18,13 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeServiceImpl employeeService) {
         this.employeeService = employeeService;
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees(@RequestParam(value = "page", required = false) String page,
-                                          @RequestParam(value = "size", required = false) String size,
+    public List<Employee> getAllEmployees(@RequestParam(value = "page", required = false) Long page,
+                                          @RequestParam(value = "size", required = false) Long size,
                                           @RequestParam(value = "sort", required = false) String sort,
                                           boolean withChain) {
         return employeeService.getAll(page, size, sort, withChain);
@@ -36,8 +37,8 @@ public class EmployeeController {
 
     @GetMapping("/by_manager/{manager_id}")
     public List<Employee> getEmployeesByManager(@PathVariable Long manager_id,
-                                                @RequestParam("page") String page,
-                                                @RequestParam("size") String size,
+                                                @RequestParam("page") Long page,
+                                                @RequestParam("size") Long size,
                                                 @RequestParam("sort") String sort) {
 
         return employeeService.getByManagerId(manager_id, page, size, sort);
@@ -45,8 +46,8 @@ public class EmployeeController {
 
     @GetMapping("/by_department/{department}")
     public List<Employee> getEmployeesByDepartment(@PathVariable String department,
-                                                   @RequestParam("page") String page,
-                                                   @RequestParam("size") String size,
+                                                   @RequestParam("page") Long page,
+                                                   @RequestParam("size") Long size,
                                                    @RequestParam("sort") String sort) {
         return employeeService.getByDepartment(department, page, size, sort);
     }
