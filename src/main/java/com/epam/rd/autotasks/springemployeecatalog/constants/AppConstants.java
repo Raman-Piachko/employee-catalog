@@ -92,6 +92,52 @@ public class AppConstants {
             "T " +
             "left join DEPARTMENT D on T.DEPARTMENT = D.ID ";
 
+
+    public static final String ALL_BY_MANAGER="with recursive T\n" +
+            "            (ID,FIRSTNAME,LASTNAME, MIDDLENAME, POSITION, HIREDATE, SALARY, MANAGER, DEPARTMENT) \n" +
+            "           as (\n" +
+            "                          select          \n" +
+            "              ID,\n" +
+            "                            FIRSTNAME,\n" +
+            "                           LASTNAME,\n" +
+            "                           MIDDLENAME,\n" +
+            "                            POSITION,\n" +
+            "                            HIREDATE,\n" +
+            "                            SALARY,\n" +
+            "                           MANAGER,\n" +
+            "                            DEPARTMENT\n" +
+            "                          from\n" +
+            "                            EMPLOYEE where manager = %d\n" +
+            "                            union all\n" +
+            "                            select\n" +
+            "                              M.ID,\n" +
+            "                              M.FIRSTNAME,\n" +
+            "                              M.LASTNAME,\n" +
+            "                             M.MIDDLENAME,\n" +
+            "                              M.POSITION,\n" +
+            "                              M.HIREDATE,\n" +
+            "                              M.SALARY,\n" +
+            "                              M.MANAGER,\n" +
+            "                              M.DEPARTMENT\n" +
+            "                            from\n" +
+            "                              T\n" +
+            "                            inner join EMPLOYEE as M on T.MANAGER = M.ID \n" +
+            "                        ) select distinct \n" +
+            "            T.ID, \n" +
+            "            T.FIRSTNAME, \n" +
+            "            T.LASTNAME, \n" +
+            "            T.MIDDLENAME,\n" +
+            "            T.POSITION, \n" +
+            "            T.MANAGER, \n" +
+            "            T.HIREDATE, \n" +
+            "            T.SALARY,\n" +
+            "            T.DEPARTMENT, \n" +
+            "            D.NAME, \n" +
+            "            D.LOCATION \n" +
+            "            from \n" +
+            "            T \n" +
+            "            left join DEPARTMENT D on T.DEPARTMENT = D.ID ";
+
     public static final String LIMIT_OFFSET = " LIMIT %d OFFSET %d";
 
     public static final String LASTNAME_CASE = "lastName";

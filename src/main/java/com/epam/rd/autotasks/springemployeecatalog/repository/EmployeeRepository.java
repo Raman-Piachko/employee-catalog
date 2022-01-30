@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Objects;
 
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.ALL_BY_MANAGER;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.ALL_EMPLOYEE;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.DIGIT_REGEX;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.EMPLOYEE_BY_ID_SELECT;
@@ -51,9 +52,9 @@ public class EmployeeRepository {
                 case HIREDATE_CASE:
                     return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(withChain));
                 case POSITION_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE+ ORDER_BY_POSITION + limitOffset), factory.getExtractor(withChain));
+                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_POSITION + limitOffset), factory.getExtractor(withChain));
                 default:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE+ ORDER_BY_SALARY + limitOffset), factory.getExtractor(withChain));
+                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_SALARY + limitOffset), factory.getExtractor(withChain));
 
             }
         }
@@ -76,7 +77,7 @@ public class EmployeeRepository {
 
     public List<Employee> getByManagerId(Long managerId, Long page, long size, String sort) {
         if (page == null) {
-            return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE MANAGER = " + managerId+ ORDER_BY_LASTNAME), factory.getExtractor(false));
+            return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_LASTNAME), factory.getExtractor(false));
         } else {
             int offset = Math.toIntExact((size * page) - size);
             if (offset < 0) {
@@ -86,13 +87,13 @@ public class EmployeeRepository {
 
             switch (sort) {
                 case LASTNAME_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE MANAGER = " + managerId+ ORDER_BY_LASTNAME), factory.getExtractor(false));
+                    return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_LASTNAME ), factory.getExtractor(false));
                 case HIREDATE_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE MANAGER = " + managerId+ ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(false));
+                    return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_HIREDATE ), factory.getExtractor(false));
                 case POSITION_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE MANAGER = " + managerId+ ORDER_BY_POSITION + limitOffset), factory.getExtractor(false));
+                    return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_POSITION ), factory.getExtractor(false));
                 default:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE MANAGER = " + managerId+ ORDER_BY_SALARY + limitOffset), factory.getExtractor(false));
+                    return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_SALARY ), factory.getExtractor(false));
 
             }
         }
@@ -101,7 +102,7 @@ public class EmployeeRepository {
     public List<Employee> getEmployeesByDepartment(String departmentParameter, Long page, Long size, String sort) {
         if (departmentParameter.matches(DIGIT_REGEX)) {
             if (page == null) {
-                return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter+ ORDER_BY_LASTNAME), factory.getExtractor(false));
+                return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_LASTNAME), factory.getExtractor(false));
             } else {
                 int offset = Math.toIntExact((size * page) - size);
                 if (offset < 0) {
@@ -111,19 +112,19 @@ public class EmployeeRepository {
 
                 switch (sort) {
                     case LASTNAME_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter+ ORDER_BY_LASTNAME), factory.getExtractor(false));
+                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_LASTNAME), factory.getExtractor(false));
                     case HIREDATE_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter+ ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(false));
+                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(false));
                     case POSITION_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter+ ORDER_BY_POSITION + limitOffset), factory.getExtractor(false));
+                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_POSITION + limitOffset), factory.getExtractor(false));
                     default:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter+ ORDER_BY_SALARY + limitOffset), factory.getExtractor(false));
+                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_SALARY + limitOffset), factory.getExtractor(false));
 
                 }
             }
         } else {
             if (page == null) {
-                return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter+ ORDER_BY_LASTNAME), factory.getExtractor(false));
+                return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_LASTNAME), factory.getExtractor(false));
             } else {
                 int offset = Math.toIntExact((size * page) - size);
                 if (offset < 0) {
@@ -133,13 +134,13 @@ public class EmployeeRepository {
 
                 switch (sort) {
                     case LASTNAME_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter+ ORDER_BY_LASTNAME), factory.getExtractor(false));
+                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_LASTNAME), factory.getExtractor(false));
                     case HIREDATE_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter+ ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(false));
+                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(false));
                     case POSITION_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter+ ORDER_BY_POSITION + limitOffset), factory.getExtractor(false));
+                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_POSITION + limitOffset), factory.getExtractor(false));
                     default:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter+ ORDER_BY_SALARY + limitOffset), factory.getExtractor(false));
+                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_SALARY + limitOffset), factory.getExtractor(false));
 
                 }
             }
