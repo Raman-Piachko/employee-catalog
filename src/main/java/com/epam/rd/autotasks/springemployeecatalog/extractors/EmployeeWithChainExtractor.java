@@ -50,6 +50,7 @@ public class EmployeeWithChainExtractor implements ResultSetExtractor<List<Emplo
         String location = resultSet.getString(String.valueOf(ColumnEnum.location));
         Employee mgr = resultSet.getLong(String.valueOf(ColumnEnum.manager)) == NULL ? null : manager;
         Department department = departmentId != 0L ? new Department(departmentId, name, location) : null;
+
         return new Employee(id, fullName, position, hired, salary, mgr, department);
     }
 
@@ -65,6 +66,7 @@ public class EmployeeWithChainExtractor implements ResultSetExtractor<List<Emplo
             }
         }
         resultSet.absolute(currentRow);
+
         return manager;
     }
 }

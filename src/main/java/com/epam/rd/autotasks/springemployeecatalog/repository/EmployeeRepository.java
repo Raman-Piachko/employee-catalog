@@ -5,13 +5,14 @@ import com.epam.rd.autotasks.springemployeecatalog.extractors.ExtractorFactory;
 import com.epam.rd.autotasks.springemployeecatalog.extractors.ExtractorFactoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.ALL_BY_DEPARTMENT_ID;
+import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.ALL_BY_DEPARTMENT_NAME;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.ALL_BY_MANAGER;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.ALL_EMPLOYEE;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.DIGIT_REGEX;
@@ -20,6 +21,8 @@ import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.LASTNAME_CASE;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.LIMIT_OFFSET;
 import static com.epam.rd.autotasks.springemployeecatalog.constants.AppConstants.POSITION_CASE;
+import static com.epam.rd.autotasks.springemployeecatalog.utils.PaginationUtils.getPage;
+import static com.epam.rd.autotasks.springemployeecatalog.utils.StatementUtils.getPreparedStatementCreator;
 
 @Repository
 public class EmployeeRepository {
@@ -36,112 +39,165 @@ public class EmployeeRepository {
         this.factory = factory;
     }
 
-    public List<Employee> getAllEmployees(Long page, Long size, String sort, boolean withChain) {
-        if (page == null) {
-            return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_LASTNAME), factory.getExtractor(withChain));
-        } else {
-            int offset = Math.toIntExact((size * page) - size);
-            if (offset < 0) {
-                offset = 0;
-            }
-            String limitOffset = String.format(LIMIT_OFFSET, size, offset);
-
-            switch (sort) {
-                case LASTNAME_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_LASTNAME), factory.getExtractor(withChain));
-                case HIREDATE_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(withChain));
-                case POSITION_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_POSITION + limitOffset), factory.getExtractor(withChain));
-                default:
-                    return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_SALARY + limitOffset), factory.getExtractor(withChain));
-
-            }
-        }
-    }
-
     public Employee getEmployeeById(Long id, boolean withChain) {
-        return Objects.requireNonNull(jdbcTemplate.query(getPreparedStatementCreator(EMPLOYEE_BY_ID_SELECT, id),
+        return Objects.requireNonNull(jdbcTemplate.query(
+                        getPreparedStatementCreator(EMPLOYEE_BY_ID_SELECT, id),
                         factory.getExtractor(withChain)))
                 .get(0);
     }
 
-    private PreparedStatementCreator getPreparedStatementCreator(String query, Long id) {
-        String finalQuery = String.format(query, id);
-        return connection -> connection.prepareStatement(finalQuery, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-    }
-
-    private PreparedStatementCreator getPreparedStatementCreator(String query) {
-        return connection -> connection.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-    }
-
-    public List<Employee> getByManagerId(Long managerId, Long page, long size, String sort) {
+    public List<Employee> getAllEmployees(Long page, Long size, String sort, boolean withChain) {
         if (page == null) {
-            return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_LASTNAME), factory.getExtractor(false));
+            return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_LASTNAME), factory.getExtractor(withChain));
         } else {
-            int offset = Math.toIntExact((size * page) - size);
-            if (offset < 0) {
-                offset = 0;
-            }
-            String limitOffset = String.format(LIMIT_OFFSET, size, offset);
-
+            List<Employee> employees;
             switch (sort) {
                 case LASTNAME_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_LASTNAME ), factory.getExtractor(false));
+                    employees = jdbcTemplate.query(
+                            getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_LASTNAME),
+                            factory.getExtractor(withChain));
+                    return getPage(employees, page.intValue(), size.intValue());
                 case HIREDATE_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_HIREDATE ), factory.getExtractor(false));
+                    employees = jdbcTemplate.query(
+                            getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_HIREDATE),
+                            factory.getExtractor(withChain));
+                    return getPage(employees, page.intValue(), size.intValue());
                 case POSITION_CASE:
-                    return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_POSITION ), factory.getExtractor(false));
+                    employees = jdbcTemplate.query(
+                            getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_POSITION),
+                            factory.getExtractor(withChain));
+                    return getPage(employees, page.intValue(), size.intValue());
                 default:
-                    return jdbcTemplate.query(getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_SALARY ), factory.getExtractor(false));
+                    employees = jdbcTemplate.query(
+                            getPreparedStatementCreator(ALL_EMPLOYEE + ORDER_BY_SALARY),
+                            factory.getExtractor(withChain));
+                    return getPage(employees, page.intValue(), size.intValue());
+            }
+        }
+    }
 
+    public List<Employee> getByManagerId(Long managerId, Long page, Long size, String sort) {
+        if (page == null) {
+            return jdbcTemplate.query(
+                            getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_LASTNAME),
+                            factory.getExtractor(false)).stream()
+                    .filter(employee -> employee.getManager() != null && managerId.equals(employee.getManager().getId()))
+                    .collect(Collectors.toList());
+        } else {
+            List<Employee> employees;
+            switch (sort) {
+                case LASTNAME_CASE:
+                    employees = jdbcTemplate.query(
+                                    getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_LASTNAME),
+                                    factory.getExtractor(false)).stream()
+                            .filter(employee -> employee.getManager() != null && managerId.equals(employee.getManager().getId()))
+                            .collect(Collectors.toList());
+                    return getPage(employees, page.intValue(), size.intValue());
+                case HIREDATE_CASE:
+                    employees = jdbcTemplate.query(
+                                    getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_HIREDATE),
+                                    factory.getExtractor(false)).stream()
+                            .filter(employee -> employee.getManager() != null && managerId.equals(employee.getManager().getId()))
+                            .collect(Collectors.toList());
+                    return getPage(employees, page.intValue(), size.intValue());
+                case POSITION_CASE:
+                    employees = jdbcTemplate.query(
+                                    getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_POSITION),
+                                    factory.getExtractor(false)).stream()
+                            .filter(employee -> employee.getManager() != null && managerId.equals(employee.getManager().getId()))
+                            .collect(Collectors.toList());
+                    return getPage(employees, page.intValue(), size.intValue());
+                default:
+                    employees = jdbcTemplate.query(
+                                    getPreparedStatementCreator(String.format(ALL_BY_MANAGER, managerId) + ORDER_BY_SALARY),
+                                    factory.getExtractor(false)).stream()
+                            .filter(employee -> employee.getManager() != null && managerId.equals(employee.getManager().getId()))
+                            .collect(Collectors.toList());
+                    return getPage(employees, page.intValue(), size.intValue());
             }
         }
     }
 
     public List<Employee> getEmployeesByDepartment(String departmentParameter, Long page, Long size, String sort) {
         if (departmentParameter.matches(DIGIT_REGEX)) {
+            Long departmentId = Long.valueOf(departmentParameter);
             if (page == null) {
-                return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_LASTNAME), factory.getExtractor(false));
+                return jdbcTemplate.query(
+                                getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_ID, departmentId) + ORDER_BY_LASTNAME),
+                                factory.getExtractor(false)).stream()
+                        .filter(employee -> employee.getDepartment() != null && departmentId.equals(employee.getDepartment().getId()))
+                        .collect(Collectors.toList());
             } else {
-                int offset = Math.toIntExact((size * page) - size);
-                if (offset < 0) {
-                    offset = 0;
-                }
-                String limitOffset = String.format(LIMIT_OFFSET, size, offset);
-
+                List<Employee> employees;
                 switch (sort) {
                     case LASTNAME_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_LASTNAME), factory.getExtractor(false));
+                        employees = jdbcTemplate.query(
+                                        getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_ID, departmentId) + ORDER_BY_LASTNAME),
+                                        factory.getExtractor(false)).stream()
+                                .filter(employee -> employee.getDepartment() != null && departmentId.equals(employee.getDepartment().getId()))
+                                .collect(Collectors.toList());
+                        return getPage(employees, page.intValue(), size.intValue());
                     case HIREDATE_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(false));
+                        employees = jdbcTemplate.query(
+                                        getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_ID, departmentId) + ORDER_BY_HIREDATE),
+                                        factory.getExtractor(false)).stream()
+                                .filter(employee -> employee.getDepartment() != null && departmentId.equals(employee.getDepartment().getId()))
+                                .collect(Collectors.toList());
+                        return getPage(employees, page.intValue(), size.intValue());
                     case POSITION_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_POSITION + limitOffset), factory.getExtractor(false));
+                        employees = jdbcTemplate.query(
+                                        getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_ID, departmentId) + ORDER_BY_POSITION),
+                                        factory.getExtractor(false)).stream()
+                                .filter(employee -> employee.getDepartment() != null && departmentId.equals(employee.getDepartment().getId()))
+                                .collect(Collectors.toList());
+                        return getPage(employees, page.intValue(), size.intValue());
                     default:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE DEPARTMENT = " + departmentParameter + ORDER_BY_SALARY + limitOffset), factory.getExtractor(false));
-
+                        employees = jdbcTemplate.query(
+                                        getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_ID, departmentId) + ORDER_BY_SALARY),
+                                        factory.getExtractor(false)).stream()
+                                .filter(employee -> employee.getDepartment() != null && departmentId.equals(employee.getDepartment().getId()))
+                                .collect(Collectors.toList());
+                        return getPage(employees, page.intValue(), size.intValue());
                 }
             }
         } else {
             if (page == null) {
-                return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_LASTNAME), factory.getExtractor(false));
+                return jdbcTemplate.query(
+                                getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_ID, departmentParameter) + ORDER_BY_HIREDATE),
+                                factory.getExtractor(false)).stream()
+                        .filter(employee -> employee.getDepartment() != null && departmentParameter.equalsIgnoreCase(employee.getDepartment().getName()))
+                        .collect(Collectors.toList());
             } else {
-                int offset = Math.toIntExact((size * page) - size);
-                if (offset < 0) {
-                    offset = 0;
-                }
-                String limitOffset = String.format(LIMIT_OFFSET, size, offset);
-
+                List<Employee> employees;
                 switch (sort) {
                     case LASTNAME_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_LASTNAME), factory.getExtractor(false));
+                        employees = jdbcTemplate.query(
+                                        getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_NAME, departmentParameter) + ORDER_BY_LASTNAME),
+                                        factory.getExtractor(false)).stream()
+                                .filter(employee -> employee.getDepartment() != null && departmentParameter.equalsIgnoreCase(employee.getDepartment().getName()))
+                                .collect(Collectors.toList());
+                        return getPage(employees, page.intValue(), size.intValue());
                     case HIREDATE_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_HIREDATE + limitOffset), factory.getExtractor(false));
+                        employees = jdbcTemplate.query(
+                                        getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_NAME, departmentParameter) + ORDER_BY_HIREDATE),
+                                        factory.getExtractor(false)).stream()
+                                .filter(employee -> employee.getDepartment() != null && departmentParameter.equalsIgnoreCase(employee.getDepartment().getName()))
+                                .collect(Collectors.toList());
+                        return getPage(employees, page.intValue(), size.intValue());
                     case POSITION_CASE:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_POSITION + limitOffset), factory.getExtractor(false));
+                        employees = jdbcTemplate.query(
+                                        getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_NAME, departmentParameter) + ORDER_BY_POSITION),
+                                        factory.getExtractor(false)).stream()
+                                .filter(employee -> employee.getDepartment() != null && departmentParameter.equalsIgnoreCase(employee.getDepartment().getName()))
+                                .collect(Collectors.toList());
+                        return getPage(employees, page.intValue(), size.intValue());
                     default:
-                        return jdbcTemplate.query(getPreparedStatementCreator(ALL_EMPLOYEE + " WHERE NAME = " + departmentParameter + ORDER_BY_SALARY + limitOffset), factory.getExtractor(false));
-
+                        employees = jdbcTemplate.query(
+                                        getPreparedStatementCreator(String.format(ALL_BY_DEPARTMENT_NAME, departmentParameter) + ORDER_BY_SALARY),
+                                        factory.getExtractor(false)).stream()
+                                .filter(employee -> employee.getDepartment() != null && departmentParameter.equalsIgnoreCase(employee.getDepartment().getName()))
+                                .collect(Collectors.toList());
+                        return getPage(employees, page.intValue(), size.intValue());
                 }
             }
         }

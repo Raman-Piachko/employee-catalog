@@ -33,6 +33,7 @@ public class SimpleEmployeeExtractor implements ResultSetExtractor<List<Employee
         while (resultSet.next()) {
             employees.add(createEmployeeWithManager(resultSet, getManagersManager(resultSet)));
         }
+
         return employees;
     }
 
@@ -50,6 +51,7 @@ public class SimpleEmployeeExtractor implements ResultSetExtractor<List<Employee
         String location = resultSet.getString(String.valueOf(ColumnEnum.location));
         Employee mgr = resultSet.getLong(String.valueOf(ColumnEnum.manager)) == NULL ? null : manager;
         Department department = departmentId != 0L ? new Department(departmentId, name, location) : null;
+
         return new Employee(id, fullName, position, hired, salary, mgr, department);
     }
 
@@ -65,6 +67,7 @@ public class SimpleEmployeeExtractor implements ResultSetExtractor<List<Employee
             }
         }
         resultSet.absolute(currentRow);
+
         return manager;
     }
 }
