@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
@@ -18,8 +18,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getAll(Long page, Long size, String sort, boolean withChain) {
-        return employeeRepository.getAllEmployees(page, size, sort, withChain);
+    public List<Employee> getAll(Long page, Long size, String sort) {
+        return employeeRepository.getAllEmployees(page, size, sort);
     }
 
     @Override

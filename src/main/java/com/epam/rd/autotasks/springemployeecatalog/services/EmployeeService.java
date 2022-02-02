@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface EmployeeService {
-    List<Employee> getAll(Long page, Long size, String sort, boolean withChain);
+    List<Employee> getAll(Long page, Long size, String sort);
 
     Employee getById(Long employeeId, Boolean withChain);
 

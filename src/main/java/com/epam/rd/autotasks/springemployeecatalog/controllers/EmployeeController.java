@@ -15,9 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("employees")
 public class EmployeeController {
-    @Autowired
-    private EmployeeService employeeService;
 
+    private final EmployeeService employeeService;
+
+    @Autowired
     public EmployeeController(EmployeeServiceImpl employeeService) {
         this.employeeService = employeeService;
     }
@@ -25,9 +26,8 @@ public class EmployeeController {
     @GetMapping
     public List<Employee> getAllEmployees(@RequestParam(value = "page", required = false) Long page,
                                           @RequestParam(value = "size", required = false) Long size,
-                                          @RequestParam(value = "sort", required = false) String sort,
-                                          boolean withChain) {
-        return employeeService.getAll(page, size, sort, withChain);
+                                          @RequestParam(value = "sort", required = false) String sort) {
+        return employeeService.getAll(page, size, sort);
     }
 
     @GetMapping("/{employee_id}")
