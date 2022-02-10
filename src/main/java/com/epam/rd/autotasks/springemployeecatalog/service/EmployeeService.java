@@ -1,11 +1,9 @@
-package com.epam.rd.autotasks.springemployeecatalog.services;
+package com.epam.rd.autotasks.springemployeecatalog.service;
 
 import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface EmployeeService {
     List<Employee> getAll(Long page, Long size, String sort);
 

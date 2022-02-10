@@ -1,8 +1,8 @@
 package com.epam.rd.autotasks.springemployeecatalog.controllers;
 
 import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
-import com.epam.rd.autotasks.springemployeecatalog.services.EmployeeService;
-import com.epam.rd.autotasks.springemployeecatalog.services.EmployeeServiceImpl;
+import com.epam.rd.autotasks.springemployeecatalog.service.EmployeeService;
+import com.epam.rd.autotasks.springemployeecatalog.service.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,18 +30,18 @@ public class EmployeeController {
         return employeeService.getAll(page, size, sort);
     }
 
-    @GetMapping("/{employee_id}")
-    public Employee getEmployeeById(@PathVariable Long employee_id, @RequestParam(value = "full_chain", defaultValue = "false") Boolean withChain) {
-        return employeeService.getById(employee_id, withChain);
+    @GetMapping("/{employeeId}")
+    public Employee getEmployeeById(@PathVariable Long employeeId, @RequestParam(value = "full_chain", defaultValue = "false") Boolean withChain) {
+        return employeeService.getById(employeeId, withChain);
     }
 
-    @GetMapping("/by_manager/{manager_id}")
-    public List<Employee> getEmployeesByManager(@PathVariable Long manager_id,
+    @GetMapping("/by_manager/{managerId}")
+    public List<Employee> getEmployeesByManager(@PathVariable Long managerId,
                                                 @RequestParam("page") Long page,
                                                 @RequestParam("size") Long size,
                                                 @RequestParam("sort") String sort) {
 
-        return employeeService.getByManagerId(manager_id, page, size, sort);
+        return employeeService.getByManagerId(managerId, page, size, sort);
     }
 
     @GetMapping("/by_department/{department}")

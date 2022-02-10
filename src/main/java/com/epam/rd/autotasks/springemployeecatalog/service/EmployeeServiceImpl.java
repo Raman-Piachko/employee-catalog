@@ -1,7 +1,8 @@
-package com.epam.rd.autotasks.springemployeecatalog.services;
+package com.epam.rd.autotasks.springemployeecatalog.service;
 
 import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
 import com.epam.rd.autotasks.springemployeecatalog.repository.EmployeeRepository;
+import com.epam.rd.autotasks.springemployeecatalog.repository.EmployeeRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
