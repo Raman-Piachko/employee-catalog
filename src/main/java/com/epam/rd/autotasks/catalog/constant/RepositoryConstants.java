@@ -1,10 +1,10 @@
-package com.epam.rd.autotasks.springemployeecatalog.constant;
+package com.epam.rd.autotasks.catalog.constant;
 
 public final class RepositoryConstants {
     private RepositoryConstants() {
     }
 
-    public static final String EMPLOYEE_BY_ID_SELECT = "with recursive  T " +
+    public static final String SELECT_EMPLOYEE_BY_ID = "with recursive  T " +
             " (ID,FIRSTNAME,LASTNAME, MIDDLENAME, POSITION, HIREDATE, SALARY, MANAGER, DEPARTMENT) " +
             " as " +
             " (select" +
@@ -49,7 +49,7 @@ public final class RepositoryConstants {
             "   T" +
             " left join DEPARTMENT D on T.DEPARTMENT = D.ID ;";
 
-    public static final String ALL_EMPLOYEES = "select" +
+    public static final String SELECT_ALL_EMPLOYEES = "select" +
             "    e.ID as ID_e," +
             "    e.FIRSTNAME as FIRSTNAME_e," +
             "    e.LASTNAME as LASTNAME_e," +
@@ -75,21 +75,15 @@ public final class RepositoryConstants {
             "    d2.LOCATION as LOCATION_d_m" +
             " from" +
             "    employee e" +
-            " left join employee m on" +
-            "    e.manager = m.id" +
-            " left join DEPARTMENT d1 on" +
-            "    e.DEPARTMENT = d1.id" +
-            " left join DEPARTMENT d2 on" +
-            "    m.DEPARTMENT = d2.id";
+            " left join employee m on e.manager = m.id" +
+            " left join DEPARTMENT d1 on e.DEPARTMENT = d1.id" +
+            " left join DEPARTMENT d2 on m.DEPARTMENT = d2.id";
 
-    public static final String BY_ID = " where e.ID = ?";
-    public static final String BY_MANAGER = " where e.MANAGER = ?";
-    public static final String BY_DEPARTMENT_ID = " where d1.ID = ?";
-    public static final String BY_DEPARTMENT_NAME = " where d1.NAME = ?";
+    public static final String WHERE_BY_ID = " where e.ID = ?";
+    public static final String WHERE_BY_MANAGER = " where e.MANAGER = ?";
+    public static final String WHERE_BY_DEPARTMENT_ID = " where d1.ID = ?";
+    public static final String WHERE_BY_DEPARTMENT_NAME = " where d1.NAME = ?";
 
-    public static final String LASTNAME_CASE = "lastName";
-    public static final String HIREDATE_CASE = "hired";
-    public static final String POSITION_CASE = "position";
     public static final String DIGIT_REGEX = "\\d+";
 
     public static final String LIMIT_OFFSET = " LIMIT ? OFFSET ?";

@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog.util;
+package com.epam.rd.autotasks.catalog.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

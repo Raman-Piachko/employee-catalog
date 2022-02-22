@@ -1,10 +1,10 @@
-package com.epam.rd.autotasks.springemployeecatalog.extractor;
+package com.epam.rd.autotasks.catalog.extractor;
 
-import com.epam.rd.autotasks.springemployeecatalog.constant.TableColumnNamesEnum;
-import com.epam.rd.autotasks.springemployeecatalog.domain.Department;
-import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
-import com.epam.rd.autotasks.springemployeecatalog.domain.FullName;
-import com.epam.rd.autotasks.springemployeecatalog.domain.Position;
+import com.epam.rd.autotasks.catalog.constant.TableColumnNamesEnum;
+import com.epam.rd.autotasks.catalog.domain.Department;
+import com.epam.rd.autotasks.catalog.domain.Employee;
+import com.epam.rd.autotasks.catalog.domain.FullName;
+import com.epam.rd.autotasks.catalog.domain.Position;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +15,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.rd.autotasks.springemployeecatalog.constant.TableColumnNamesEnum.DEPARTMENT;
-import static com.epam.rd.autotasks.springemployeecatalog.constant.TableColumnNamesEnum.FIRSTNAME;
-import static com.epam.rd.autotasks.springemployeecatalog.constant.TableColumnNamesEnum.HIREDATE;
-import static com.epam.rd.autotasks.springemployeecatalog.constant.TableColumnNamesEnum.ID;
-import static com.epam.rd.autotasks.springemployeecatalog.constant.TableColumnNamesEnum.LASTNAME;
-import static com.epam.rd.autotasks.springemployeecatalog.constant.TableColumnNamesEnum.MANAGER;
-import static com.epam.rd.autotasks.springemployeecatalog.constant.TableColumnNamesEnum.MIDDLENAME;
+import static com.epam.rd.autotasks.catalog.constant.TableColumnNamesEnum.DEPARTMENT;
+import static com.epam.rd.autotasks.catalog.constant.TableColumnNamesEnum.FIRSTNAME;
+import static com.epam.rd.autotasks.catalog.constant.TableColumnNamesEnum.HIREDATE;
+import static com.epam.rd.autotasks.catalog.constant.TableColumnNamesEnum.ID;
+import static com.epam.rd.autotasks.catalog.constant.TableColumnNamesEnum.LASTNAME;
+import static com.epam.rd.autotasks.catalog.constant.TableColumnNamesEnum.MANAGER;
+import static com.epam.rd.autotasks.catalog.constant.TableColumnNamesEnum.MIDDLENAME;
 import static java.sql.Types.NULL;
 
 @Component
@@ -48,13 +48,13 @@ public class EmployeeWithChainExtractor implements ResultSetExtractor<List<Emplo
         long departmentId = resultSet.getLong(DEPARTMENT.getColumnName());
         String name = resultSet.getString(TableColumnNamesEnum.NAME.getColumnName());
         String location = resultSet.getString(TableColumnNamesEnum.LOCATION.getColumnName());
-        Employee mgr = resultSet.getLong(MANAGER.getColumnName()) == NULL ? null : manager;
-        Department department = departmentId != 0L ? new Department(departmentId, name, location) : null;
+        Employee mgr = getManager(resultSet, manager);
+        Department department = getDepartment(departmentId, name, location);
 
         return new Employee(id, fullName, position, hired, salary, mgr, department);
     }
 
-    public static Employee getManagersManager(ResultSet resultSet) throws SQLException {
+    private static Employee getManagersManager(ResultSet resultSet) throws SQLException {
         int currentRow = resultSet.getRow();
         long managerId = resultSet.getLong(MANAGER.getColumnName());
         resultSet.beforeFirst();
@@ -68,5 +68,21 @@ public class EmployeeWithChainExtractor implements ResultSetExtractor<List<Emplo
         resultSet.absolute(currentRow);
 
         return manager;
+    }
+
+    private static Department getDepartment(long departmentId, String name, String location) {
+        if (departmentId != 0L) {
+            return new Department(departmentId, name, location);
+        } else {
+            return null;
+        }
+    }
+
+    private static Employee getManager(ResultSet resultSet, Employee manager) throws SQLException {
+        if (resultSet.getLong(MANAGER.getColumnName()) == NULL) {
+            return null;
+        } else {
+            return manager;
+        }
     }
 }

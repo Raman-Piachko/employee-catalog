@@ -1,6 +1,6 @@
-package com.epam.rd.autotasks.springemployeecatalog.service;
+package com.epam.rd.autotasks.catalog.service;
 
-import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
+import com.epam.rd.autotasks.catalog.domain.Employee;
 
 import java.util.List;
 

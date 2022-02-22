@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog.constant;
+package com.epam.rd.autotasks.catalog.constant;
 
 public enum TableColumnNamesEnum {
     ID("ID"),

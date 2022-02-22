@@ -1,8 +1,8 @@
-package com.epam.rd.autotasks.springemployeecatalog.controllers;
+package com.epam.rd.autotasks.catalog.controllers;
 
-import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
-import com.epam.rd.autotasks.springemployeecatalog.service.EmployeeService;
-import com.epam.rd.autotasks.springemployeecatalog.service.EmployeeServiceImpl;
+import com.epam.rd.autotasks.catalog.domain.Employee;
+import com.epam.rd.autotasks.catalog.service.EmployeeService;
+import com.epam.rd.autotasks.catalog.service.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

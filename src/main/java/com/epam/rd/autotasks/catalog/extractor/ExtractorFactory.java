@@ -1,6 +1,6 @@
-package com.epam.rd.autotasks.springemployeecatalog.extractor;
+package com.epam.rd.autotasks.catalog.extractor;
 
-import com.epam.rd.autotasks.springemployeecatalog.domain.Employee;
+import com.epam.rd.autotasks.catalog.domain.Employee;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.util.List;
