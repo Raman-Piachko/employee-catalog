@@ -1,5 +1,6 @@
 package com.epam.rd.autotasks.catalog.controllers;
 
+import com.epam.rd.autotasks.catalog.constant.SortEnum;
 import com.epam.rd.autotasks.catalog.domain.Employee;
 import com.epam.rd.autotasks.catalog.service.EmployeeService;
 import com.epam.rd.autotasks.catalog.service.EmployeeServiceImpl;
@@ -26,7 +27,7 @@ public class EmployeeController {
     @GetMapping
     public List<Employee> getAllEmployees(@RequestParam(value = "page", required = false) Long page,
                                           @RequestParam(value = "size", required = false) Long size,
-                                          @RequestParam(value = "sort", required = false) String sort) {
+                                          @RequestParam(value = "sort", required = false) SortEnum sort) {
         return employeeService.getAll(page, size, sort);
     }
 
@@ -39,7 +40,7 @@ public class EmployeeController {
     public List<Employee> getEmployeesByManager(@PathVariable Long managerId,
                                                 @RequestParam("page") Long page,
                                                 @RequestParam("size") Long size,
-                                                @RequestParam("sort") String sort) {
+                                                @RequestParam("sort") SortEnum sort) {
 
         return employeeService.getByManagerId(managerId, page, size, sort);
     }
@@ -48,7 +49,7 @@ public class EmployeeController {
     public List<Employee> getEmployeesByDepartment(@PathVariable String department,
                                                    @RequestParam("page") Long page,
                                                    @RequestParam("size") Long size,
-                                                   @RequestParam("sort") String sort) {
+                                                   @RequestParam("sort") SortEnum sort) {
         return employeeService.getByDepartment(department, page, size, sort);
     }
 }

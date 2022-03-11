@@ -1,5 +1,6 @@
 package com.epam.rd.autotasks.catalog.service;
 
+import com.epam.rd.autotasks.catalog.constant.SortEnum;
 import com.epam.rd.autotasks.catalog.domain.Employee;
 import com.epam.rd.autotasks.catalog.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getAll(Long page, Long size, String sort) {
+    public List<Employee> getAll(Long page, Long size, SortEnum sort) {
         return employeeRepository.getAllEmployees(page, size, sort);
     }
 
@@ -28,11 +29,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getByManagerId(Long managerId, Long page, Long size, String sort) {
+    public List<Employee> getByManagerId(Long managerId, Long page, Long size, SortEnum sort) {
         return employeeRepository.getByManagerId(managerId, page, size, sort);
     }
 
-    public List<Employee> getByDepartment(String departmentParameter, Long page, Long size, String sort) {
+    public List<Employee> getByDepartment(String departmentParameter, Long page, Long size, SortEnum sort) {
         return employeeRepository.getEmployeesByDepartment(departmentParameter, page, size, sort);
     }
 }

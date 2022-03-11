@@ -1,10 +1,10 @@
 package com.epam.rd.autotasks.catalog.constant;
 
 public enum SortEnum {
-    LASTNAME(" ORDER BY LASTNAME_e"),
-    HIRED(" ORDER BY HIREDATE_e"),
-    POSITION(" ORDER BY POSITION_e"),
-    SALARY(" ORDER BY SALARY_e");
+    LASTNAME("LASTNAME"),
+    HIRED("HIREDATE"),
+    POSITION("POSITION"),
+    SALARY("SALARY");
 
     private final String sortName;
 

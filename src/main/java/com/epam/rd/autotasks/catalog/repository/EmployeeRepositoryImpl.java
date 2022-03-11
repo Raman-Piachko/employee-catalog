@@ -4,13 +4,15 @@ import com.epam.rd.autotasks.catalog.constant.SortEnum;
 import com.epam.rd.autotasks.catalog.domain.Employee;
 import com.epam.rd.autotasks.catalog.extractor.ExtractorFactory;
 import com.epam.rd.autotasks.catalog.extractor.ExtractorFactoryImpl;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static com.epam.rd.autotasks.catalog.constant.RepositoryConstants.DIGIT_REGEX;
 import static com.epam.rd.autotasks.catalog.constant.RepositoryConstants.LIMIT_OFFSET;
@@ -26,13 +28,17 @@ import static com.epam.rd.autotasks.catalog.util.StatementUtils.getPreparedState
 public class EmployeeRepositoryImpl implements EmployeeRepository {
     private final JdbcTemplate jdbcTemplate;
     private final ExtractorFactory factory;
-    private final Converter converter;
+    private static final Map<SortEnum, String> SORT_ORDER_MAP = ImmutableMap.<SortEnum, String>builder()
+            .put(SortEnum.LASTNAME, " ORDER BY LASTNAME_e")
+            .put(SortEnum.HIRED, " ORDER BY HIREDATE_E")
+            .put(SortEnum.POSITION, "ORDER BY POSITION_e")
+            .put(SortEnum.SALARY, " ORDER BY SALARY_e")
+            .build();
 
     @Autowired
-    public EmployeeRepositoryImpl(JdbcTemplate jdbcTemplate, ExtractorFactoryImpl factory, Converter converter) {
+    public EmployeeRepositoryImpl(JdbcTemplate jdbcTemplate, ExtractorFactoryImpl factory) {
         this.jdbcTemplate = jdbcTemplate;
         this.factory = factory;
-        this.converter = converter;
     }
 
     public Employee getEmployeeById(Long id, boolean withChain) {
@@ -48,12 +54,10 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
                     statement.setLong(1, id);
                     return statement;
                 }, factory.getExtractor(withChain))
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("EMPLOYEE DOESN'T EXIST"));
+                .stream().findFirst().orElseThrow(() -> new RuntimeException("EMPLOYEE DOESN'T EXIST"));
     }
 
-    public List<Employee> getAllEmployees(Long page, Long size, String sort) {
+    public List<Employee> getAllEmployees(Long page, Long size, SortEnum sort) {
         if (page != null) {
             return getPageOfEmployees(page, size, sort);
         } else {
@@ -61,7 +65,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         }
     }
 
-    public List<Employee> getByManagerId(Long managerId, Long page, Long size, String sort) {
+    public List<Employee> getByManagerId(Long managerId, Long page, Long size, SortEnum sort) {
         String finalQuery = SELECT_ALL_EMPLOYEES + WHERE_BY_MANAGER + getOrder(sort) + LIMIT_OFFSET;
         int offset = Math.toIntExact(page * size);
         Object[] params = {managerId, Math.toIntExact(size), offset};
@@ -69,7 +73,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         return jdbcTemplate.query(finalQuery, params, factory.getExtractor(false));
     }
 
-    public List<Employee> getEmployeesByDepartment(String departmentParameter, Long page, Long size, String sort) {
+    public List<Employee> getEmployeesByDepartment(String departmentParameter, Long page, Long size, SortEnum sort) {
         String finalQuery;
         if (departmentParameter.matches(DIGIT_REGEX)) {
             finalQuery = SELECT_ALL_EMPLOYEES + WHERE_BY_DEPARTMENT_ID + getOrder(sort) + LIMIT_OFFSET;
@@ -82,13 +86,13 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         return jdbcTemplate.query(finalQuery, params, factory.getExtractor(false));
     }
 
-    private List<Employee> getEmployees(String sort) {
+    private List<Employee> getEmployees(SortEnum sort) {
         String finalQuery = SELECT_ALL_EMPLOYEES + getOrder(sort);
 
         return jdbcTemplate.query(finalQuery, factory.getExtractor(false));
     }
 
-    private List<Employee> getPageOfEmployees(Long page, Long size, String sort) {
+    private List<Employee> getPageOfEmployees(Long page, Long size, SortEnum sort) {
         String finalQuery = SELECT_ALL_EMPLOYEES + getOrder(sort) + LIMIT_OFFSET;
         int offset = Math.toIntExact(page * size);
         Object[] params = {Math.toIntExact(size), offset};
@@ -96,12 +100,10 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         return jdbcTemplate.query(finalQuery, params, factory.getExtractor(false));
     }
 
-    private String getOrder(String sort) {
-        SortEnum type = (SortEnum) converter.convert(sort);
-        if (type != null) {
-            return type.getSortName();
-        } else {
-            return SortEnum.LASTNAME.getSortName();
+    private String getOrder(SortEnum sort) {
+        if (Objects.isNull(sort)) {
+            return SORT_ORDER_MAP.get(SortEnum.LASTNAME);
         }
+        return SORT_ORDER_MAP.get(sort);
     }
 }
