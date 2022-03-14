@@ -30,8 +30,8 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     private final ExtractorFactory factory;
     private static final Map<SortEnum, String> SORT_ORDER_MAP = ImmutableMap.<SortEnum, String>builder()
             .put(SortEnum.LASTNAME, " ORDER BY LASTNAME_e")
-            .put(SortEnum.HIRED, " ORDER BY HIREDATE_E")
-            .put(SortEnum.POSITION, "ORDER BY POSITION_e")
+            .put(SortEnum.HIRED, " ORDER BY HIREDATE_e")
+            .put(SortEnum.POSITION, " ORDER BY POSITION_e")
             .put(SortEnum.SALARY, " ORDER BY SALARY_e")
             .build();
 
@@ -49,12 +49,15 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             finalQuery = SELECT_ALL_EMPLOYEES + WHERE_BY_ID;
         }
 
-        return jdbcTemplate.query(connection -> {
-                    PreparedStatement statement = getPreparedStatement(finalQuery, connection);
-                    statement.setLong(1, id);
-                    return statement;
-                }, factory.getExtractor(withChain))
-                .stream().findFirst().orElseThrow(() -> new RuntimeException("EMPLOYEE DOESN'T EXIST"));
+        List<Employee> employees = jdbcTemplate.query(connection -> {
+            PreparedStatement statement = getPreparedStatement(finalQuery, connection);
+            statement.setLong(1, id);
+            return statement;
+        }, factory.getExtractor(withChain));
+
+            return employees.stream()
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("EMPLOYEE DOESN'T EXIST"));
     }
 
     public List<Employee> getAllEmployees(Long page, Long size, SortEnum sort) {
