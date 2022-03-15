@@ -10,9 +10,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.epam.rd.autotasks.catalog.constant.RepositoryConstants.DIGIT_REGEX;
 import static com.epam.rd.autotasks.catalog.constant.RepositoryConstants.LIMIT_OFFSET;
@@ -55,9 +57,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             return statement;
         }, factory.getExtractor(withChain));
 
-            return employees.stream()
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("EMPLOYEE DOESN'T EXIST"));
+        return Optional.ofNullable(employees)
+                .orElse(Collections.emptyList())
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("EMPLOYEE DOESN'T EXIST"));
     }
 
     public List<Employee> getAllEmployees(Long page, Long size, SortEnum sort) {
