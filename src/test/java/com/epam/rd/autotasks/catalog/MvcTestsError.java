@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog;
+package com.epam.rd.autotasks.catalog;
 
 public class MvcTestsError extends Error {
     public MvcTestsError() {

@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog.domain;
+package com.epam.rd.autotasks.catalog.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

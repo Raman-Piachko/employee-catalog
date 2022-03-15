@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog;
+package com.epam.rd.autotasks.catalog;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

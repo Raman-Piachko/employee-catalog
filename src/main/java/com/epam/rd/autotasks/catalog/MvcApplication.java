@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog;
+package com.epam.rd.autotasks.catalog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +10,3 @@ public class MvcApplication {
         SpringApplication.run(MvcApplication.class, args);
     }
 }
-
-
-

@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog;
+package com.epam.rd.autotasks.catalog;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

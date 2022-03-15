@@ -2,7 +2,7 @@
 
 Create a webapp serving somewhat like a REST catalog of employees stored in embedded database.
 
-Implement endpoints serving employees as JSON representations of `com.epam.rd.autotasks.springemployeecatalog.domain.*` classes.
+Implement endpoints serving employees as JSON representations of `com.epam.rd.autotasks.catalog.domain.*` classes.
 
 Each employee record should include information of his department and his manager.
 Manager's manager should be usually null. 

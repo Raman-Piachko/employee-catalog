@@ -1,4 +1,4 @@
-package com.epam.rd.autotasks.springemployeecatalog.domain;
+package com.epam.rd.autotasks.catalog.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,8 +20,8 @@ public class Department {
 
     @JsonCreator
     public Department(@JsonProperty("id") final Long id,
-                    @JsonProperty("fullName") final String name,
-                    @JsonProperty("position") final String location) {
+                      @JsonProperty("fullName") final String name,
+                      @JsonProperty("position") final String location) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -66,6 +66,7 @@ public class Department {
 
     public static class Parser {
         private static ObjectMapper mapper = new ObjectMapper();
+
         static {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.registerModule(new JavaTimeModule());
@@ -73,7 +74,7 @@ public class Department {
             mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
         }
 
-        public static String toJson(Department department){
+        public static String toJson(Department department) {
             try {
                 final StringWriter writer = new StringWriter();
                 mapper.writeValue(writer, department);
@@ -83,7 +84,7 @@ public class Department {
             }
         }
 
-        public static Department parseJson(String json){
+        public static Department parseJson(String json) {
             try {
                 return mapper.readValue(json, Department.class);
             } catch (IOException exc) {
